@@ -41,7 +41,7 @@ periodo_embarque = st.date_input('Período de Embarque', (pd.to_datetime('today'
 cessao = st.text_input('Cessão (opcional)')
 
 if st.button('Concluir Cadastro'):
-    novo_contrato = pd.DataFrame({'COMPRADOR': [comprador], 'CONTRATO': [contrato], 'QTD. VENDIDA': [qtd_vendida], 'MÊS DE FIXAÇÃO': [mes_fixacao], 'QUANTIDADE FIXADA': [quantidade_fixada], 'S. E. O': [seo], 'Prêmio / Desc.': [premio_desc], 'PERÍODO DE EMBARQUE': [periodo_embarque], 'Cessão': [cessao]})
+    novo_contrato = pd.DataFrame({'COMPRADOR': [comprador], 'CONTRATO': [contrato], 'QTD. VENDIDA': [qtd_vendida], 'MÊS DE FIXAÇÃO': [mes_fixacao], 'Quantidade Fixada': [quantidade_fixada], 'S. E. O': [seo], 'Prêmio / Desc.': [premio_desc], 'PERÍODO DE EMBARQUE': [periodo_embarque], 'Cessão': [cessao]})
     df = pd.concat([df, novo_contrato], ignore_index=True)
     df = calcular_campos(df)
     df.to_csv('contratos.csv', index=False)
