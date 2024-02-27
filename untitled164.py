@@ -18,7 +18,6 @@ try:
 except FileNotFoundError:
     df = pd.DataFrame(columns=['COMPRADOR', 'CONTRATO', 'QTD. VENDIDA', 'MÊS DE FIXAÇÃO', 'Quantidade Fixada', 'S. E. O', 'Prêmio / Desc.', 'PERÍODO DE EMBARQUE', 'Cessão', 'Preço Total', 'Saldo a Fixar', 'Lotes a fixar', 'SEO x Quant. Fixadas', 'Prêmio x Quant. Fixadas', 'Preço x Quant. Fixadas', 'Prêmio x Quant. Vendidas'])
 
-
 # Página de cadastro de contrato
 st.title('Cadastro de Contrato')
 
@@ -37,7 +36,6 @@ if st.button('Concluir Cadastro'):
     df = pd.concat([df, novo_contrato], ignore_index=True)
     df = calcular_campos(df)
     df.to_csv('contratos.csv', index=False)
-    save_excel(df, 'contratos.xlsx')  # Salvar também em formato Excel
     st.success('Contrato cadastrado com sucesso!')
 
 # Página de mudança de contrato
@@ -60,7 +58,6 @@ if not contrato_info.empty:
         df[df['CONTRATO'] == contrato_selecionado] = contrato_info
         df = calcular_campos(df)
         df.to_csv('contratos.csv', index=False)
-        save_excel(df, 'contratos.xlsx')  # Salvar também em formato Excel
         st.success('Contrato alterado com sucesso!')
 
 else:
@@ -71,10 +68,5 @@ st.title('Visualização e Download de Arquivos')
 
 st.write(df)
 
-
-# Adicione a opção para download em Excel
-if st.button('Baixar como Excel'):
-    excel_file = df.to_excel('contratos.xlsx', index=False)
-    st.success('Arquivo Excel gerado com sucesso!')
-
-
+st.write('Para fazer o download do arquivo CSV, clique no link abaixo:')
+st.markdown('[Download CSV](contratos.csv)')
