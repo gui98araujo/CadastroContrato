@@ -18,10 +18,6 @@ try:
 except FileNotFoundError:
     df = pd.DataFrame(columns=['COMPRADOR', 'CONTRATO', 'QTD. VENDIDA', 'MÊS DE FIXAÇÃO', 'Quantidade Fixada', 'S. E. O', 'Prêmio / Desc.', 'PERÍODO DE EMBARQUE', 'Cessão', 'Preço Total', 'Saldo a Fixar', 'Lotes a fixar', 'SEO x Quant. Fixadas', 'Prêmio x Quant. Fixadas', 'Preço x Quant. Fixadas', 'Prêmio x Quant. Vendidas'])
 
-# Função para salvar o DataFrame em formato Excel
-def save_excel(df, filename):
-    with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
-        df.to_excel(writer, index=False)
 
 # Página de cadastro de contrato
 st.title('Cadastro de Contrato')
