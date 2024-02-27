@@ -1,22 +1,12 @@
 import streamlit as st
 import pandas as pd
 
-# Função para calcular os campos derivados
-def calcular_campos(df):
-    df['Preço Total'] = df.apply(lambda row: row['S. E. O'] + row['Prêmio / Desc.'] if row['Quantidade Fixada'] > 0 else 0, axis=1)
-    df['Saldo a Fixar'] = df['QTD. VENDIDA'] - df['Quantidade Fixada']
-    df['Lotes a fixar'] = df['Saldo a Fixar'] / 50.8
-    df['SEO x Quant. Fixadas'] = df['S. E. O'] * df['Quantidade Fixada']
-    df['Prêmio x Quant. Fixadas'] = df['Prêmio / Desc.'] * df['Quantidade Fixada']
-    df['Preço x Quant. Fixadas'] = df['Preço Total'] * df['Quantidade Fixada']
-    df['Prêmio x Quant. Vendidas'] = df['Prêmio / Desc.'] * df['QTD. VENDIDA']
-    return df
-
 # Verificar se o arquivo CSV já existe, se não, criar um DataFrame vazio
 try:
     df = pd.read_csv('contratos.csv')
 except FileNotFoundError:
     df = pd.DataFrame(columns=['Comprador', 'Contrato', 'QTD. VENDIDA', 'Mês de Fixação', 'Quantidade Fixada', 'S. E. O', 'Prêmio / Desc.', 'Período de Embarque', 'Cessão'])
+    st.write('Criado DataFrame vazio')
 
 # Página de cadastro de contrato
 st.title('Cadastro de Contrato')
@@ -34,15 +24,18 @@ cessao = st.text_input('Cessão (opcional)')
 if st.button('Concluir Cadastro'):
     novo_contrato = pd.DataFrame({'Comprador': [comprador], 'Contrato': [contrato], 'QTD. VENDIDA': [qtd_vendida], 'Mês de Fixação': [mes_fixacao], 'Quantidade Fixada': [quantidade_fixada], 'S. E. O': [seo], 'Prêmio / Desc.': [premio_desc], 'Período de Embarque': [periodo_embarque], 'Cessão': [cessao]})
     df = pd.concat([df, novo_contrato], ignore_index=True)
-    df = calcular_campos(df)
-    df.to_csv('contratos.csv', index=False)
     st.success('Contrato cadastrado com sucesso!')
 
 # Página de mudança de contrato
 st.title('Mudança de Contrato')
 
 contrato_selecionado = st.text_input('Digite o contrato a ser alterado')
-contrato_info = df[df['Contrato'] == contrato_selecionado]
+st.write('Colunas presentes no DataFrame:', df.columns)  # Mensagem de depuração
+if 'Contrato' in df.columns:  # Verifica se a coluna 'Contrato' está presente
+    contrato_info = df[df['Contrato'] == contrato_selecionado]
+else:
+    contrato_info = pd.DataFrame()
+    st.write('A coluna "Contrato" não está presente no DataFrame.')  # Mensagem de depuração
 
 if not contrato_info.empty:
     st.write('Informações do contrato selecionado:')
@@ -56,12 +49,11 @@ if not contrato_info.empty:
             contrato_info[coluna] = novo_valor
 
         df[df['Contrato'] == contrato_selecionado] = contrato_info
-        df = calcular_campos(df)
         df.to_csv('contratos.csv', index=False)
         st.success('Contrato alterado com sucesso!')
 
 else:
-    st.warning('Contrato não encontrado.')
+    st.warning('Contrato não encontrado ou a coluna "Contrato" não está presente.')
 
 # Página de visualização e download de arquivos
 st.title('Visualização e Download de Arquivos')
