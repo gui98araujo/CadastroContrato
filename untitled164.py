@@ -76,5 +76,10 @@ st.title('Visualização e Download de Arquivos')
 st.write(df)
 
 
-st.write('Para fazer o download do arquivo Excel, clique no link abaixo:')
-st.markdown('[Download Excel](contratos.xlsx)')
+# Adicione a opção para download em Excel
+if st.button('Baixar como Excel'):
+    excel_file = df.to_excel('contratos.xlsx', index=False)
+    st.success('Arquivo Excel gerado com sucesso!')
+
+st.write('Para fazer o download do arquivo CSV, clique no link abaixo:')
+st.markdown('[Download CSV](contratos.csv)')
