@@ -16,7 +16,7 @@ def calcular_campos(df):
 try:
     df = pd.read_csv('contratos.csv')
 except FileNotFoundError:
-    df = pd.DataFrame(columns=['COMPRADOR', 'CONTRATO', 'QTD. VENDIDA', 'MÊS DE FIXAÇÃO', 'Quantidade Fixada', 'S. E. O', 'Prêmio / Desc.', 'PERÍODO DE EMBARQUE', 'Cessão'])
+    df = pd.DataFrame(columns=['Comprador', 'Contrato', 'QTD. VENDIDA', 'Mês de Fixação', 'Quantidade Fixada', 'S. E. O', 'Prêmio / Desc.', 'Período de Embarque', 'Cessão'])
 
 # Página de cadastro de contrato
 st.title('Cadastro de Contrato')
@@ -32,7 +32,7 @@ periodo_embarque = st.date_input('Período de Embarque', (pd.to_datetime('today'
 cessao = st.text_input('Cessão (opcional)')
 
 if st.button('Concluir Cadastro'):
-    novo_contrato = pd.DataFrame({'COMPRADOR': [comprador], 'CONTRATO': [contrato], 'QTD. VENDIDA': [qtd_vendida], 'MÊS DE FIXAÇÃO': [mes_fixacao], 'Quantidade Fixada': [quantidade_fixada], 'S. E. O': [seo], 'Prêmio / Desc.': [premio_desc], 'PERÍODO DE EMBARQUE': [periodo_embarque], 'Cessão': [cessao]})
+    novo_contrato = pd.DataFrame({'Comprador': [comprador], 'Contrato': [contrato], 'QTD. VENDIDA': [qtd_vendida], 'Mês de Fixação': [mes_fixacao], 'Quantidade Fixada': [quantidade_fixada], 'S. E. O': [seo], 'Prêmio / Desc.': [premio_desc], 'Período de Embarque': [periodo_embarque], 'Cessão': [cessao]})
     df = pd.concat([df, novo_contrato], ignore_index=True)
     df = calcular_campos(df)
     df.to_csv('contratos.csv', index=False)
@@ -42,7 +42,7 @@ if st.button('Concluir Cadastro'):
 st.title('Mudança de Contrato')
 
 contrato_selecionado = st.text_input('Digite o contrato a ser alterado')
-contrato_info = df[df['CONTRATO'] == contrato_selecionado]
+contrato_info = df[df['Contrato'] == contrato_selecionado]
 
 if not contrato_info.empty:
     st.write('Informações do contrato selecionado:')
@@ -55,7 +55,7 @@ if not contrato_info.empty:
             novo_valor = st.text_input(f'Novo valor para {coluna}')
             contrato_info[coluna] = novo_valor
 
-        df[df['CONTRATO'] == contrato_selecionado] = contrato_info
+        df[df['Contrato'] == contrato_selecionado] = contrato_info
         df = calcular_campos(df)
         df.to_csv('contratos.csv', index=False)
         st.success('Contrato alterado com sucesso!')
