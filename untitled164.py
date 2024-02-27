@@ -9,6 +9,7 @@ Original file is located at
 
 import streamlit as st
 import pandas as pd
+from openpyxl import Workbook  # Importar Workbook do openpyxl
 
 # Função para calcular os campos derivados
 def calcular_campos(df):
@@ -37,7 +38,7 @@ mes_fixacao = st.text_input('Mês de Fixação')
 quantidade_fixada = st.number_input('Quantidade Fixada (tm)', min_value=0.0)
 seo = st.number_input('S. E. O', min_value=0.0)
 premio_desc = st.number_input('Prêmio / Desc.', min_value=0.0)
-periodo_embarque = st.date_input('Período de Embarque', (pd.to_datetime('today'), pd.to_datetime('today')))
+periodo_embarque = st.date_input('Período de Embarque', (pd.to_datetime('today'), pd.to_datetime('today')), format='%d/%m/%Y')  # Formato de data desejado
 cessao = st.text_input('Cessão (opcional)')
 
 if st.button('Concluir Cadastro'):
