@@ -44,30 +44,42 @@ if st.button('Concluir Cadastro'):
     novo_contrato = pd.DataFrame({'COMPRADOR': [comprador], 'CONTRATO': [contrato], 'QTD. VENDIDA': [qtd_vendida], 'MÊS DE FIXAÇÃO': [mes_fixacao], 'Quantidade Fixada': [quantidade_fixada], 'S. E. O': [seo], 'Prêmio / Desc.': [premio_desc], 'PERÍODO DE EMBARQUE': [periodo_embarque], 'Cessão': [cessao]})
     df = pd.concat([df, novo_contrato], ignore_index=True)
     df = calcular_campos(df)
-    df.to_csv('contratos.csv', index=False)
+    df.to_excel('contratos.xlsx', index=False)  # Salvar como Excel
     st.success('Contrato cadastrado com sucesso!')
 
 # Página de mudança de contrato
 st.title('Mudança de Contrato')
 
-contrato_selecionado = st.text_input('Digite o contrato a ser alterado')
-contrato_info = df[df['CONTRATO'] == contrato_selecionado]
+contrato_selecionado = st.text_input('Digite o contrato a ser alterado ou excluído')
+contratos_info = df[df['CONTRATO'] == contrato_selecionado]
 
-if not contrato_info.empty:
-    st.write('Informações do contrato selecionado:')
-    st.write(contrato_info)
+if not contratos_info.empty:
+    st.write('Informações do(s) contrato(s) encontrado(s):')
+    st.write(contratos_info)
 
-    colunas_para_alterar = st.multiselect('Selecione as colunas para alterar', contrato_info.columns)
+    if len(contratos_info) > 1:
+        contrato_escolhido = st.selectbox('Escolha o contrato a ser modificado ou excluído', contratos_info['CONTRATO'].unique())
+        contrato_info = contratos_info[contratos_info['CONTRATO'] == contrato_escolhido].iloc[0]
+    else:
+        contrato_info = contratos_info.iloc[0]
+
+    colunas_para_alterar = st.multiselect('Selecione as colunas para alterar', contrato_info.index)
 
     if st.button('Alterar'):
         for coluna in colunas_para_alterar:
-            novo_valor = st.text_input(f'Novo valor para {coluna}')
+            novo_valor = st.text_input(f'Novo valor para {coluna}', value=str(contrato_info[coluna]))
             contrato_info[coluna] = novo_valor
 
-        df[df['CONTRATO'] == contrato_selecionado] = contrato_info
+        df.loc[df['CONTRATO'] == contrato_info['CONTRATO'], contrato_info.index] = contrato_info
         df = calcular_campos(df)
-        df.to_csv('contratos.csv', index=False)
+        df.to_excel('contratos.xlsx', index=False)  # Salvar como Excel
         st.success('Contrato alterado com sucesso!')
+
+    if st.button('Excluir'):
+        df = df[df['CONTRATO'] != contrato_info['CONTRATO']]
+        df = calcular_campos(df)
+        df.to_excel('contratos.xlsx', index=False)  # Salvar como Excel
+        st.success('Contrato excluído com sucesso!')
 
 else:
     st.warning('Contrato não encontrado.')
@@ -77,5 +89,5 @@ st.title('Visualização e Download de Arquivos')
 
 st.write(df)
 
-st.write('Para fazer o download do arquivo CSV, clique no link abaixo:')
-st.markdown('[Download CSV](contratos.csv)')
+st.write('Para fazer o download do arquivo Excel, clique no link abaixo:')
+st.markdown('[Download Excel](contratos.xlsx)')
