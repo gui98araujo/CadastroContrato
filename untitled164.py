@@ -51,11 +51,12 @@ if not contrato_info.empty:
     colunas_para_alterar = st.multiselect('Selecione as colunas para alterar', contrato_info.columns)
 
     if st.button('Alterar'):
+        novo_contrato_info = contrato_info.copy()  # Fazer uma cópia para evitar modificar o DataFrame original
         for coluna in colunas_para_alterar:
             novo_valor = st.text_input(f'Novo valor para {coluna}')
-            contrato_info[coluna] = novo_valor
+            novo_contrato_info[coluna] = novo_valor
 
-        df[df['CONTRATO'] == contrato_selecionado] = contrato_info
+        df.loc[df['CONTRATO'] == contrato_selecionado] = novo_contrato_info
         df = calcular_campos(df)
         df.to_csv('contratos.csv', index=False)
         st.success('Contrato alterado com sucesso!')
