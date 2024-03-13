@@ -63,17 +63,31 @@ if 'Contrato' in st.session_state:
     df_atualizado = calcular_colunas(st.session_state['Contrato'].copy())
     mostrar_dataframe(df_atualizado)
 
-# Selecionar contrato para exclusão
+# Selecionar contrato para editar
 if 'Contrato' in st.session_state:
-    contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_atualizado['Contrato'].tolist())
+    contrato_para_editar = st.selectbox('Selecione contrato para editar:', df_atualizado['Contrato'].tolist())
 
-    # Obter índices correspondentes aos contratos selecionados
-    indices_para_excluir = df_atualizado[df_atualizado['Contrato'].isin(contratos_para_excluir)].index.tolist()
+    # Índice do contrato selecionado
+    indice_contrato = df_atualizado[df_atualizado['Contrato'] == contrato_para_editar].index[0]
 
-    # Botão para excluir contratos selecionados
-    if st.button('Excluir Contratos'):
-        df_atualizado = df_atualizado.drop(indices_para_excluir, axis=0)
-        st.session_state['Contrato'] = df_atualizado
+    # Exibir campos de entrada preenchidos com informações do contrato selecionado
+    st.subheader('Editar Contrato')
+    comprador_edit = st.text_input('Comprador', value=df_atualizado.loc[indice_contrato, 'Comprador'])
+    contrato_edit = st.text_input('Contrato', value=df_atualizado.loc[indice_contrato, 'Contrato'])
+    quantidade_vendida_edit = st.number_input('Quantidade Vendida (tm)', value=df_atualizado.loc[indice_contrato, 'Quantidade Vendida (tm)'], step=0.1)
+    mes_fixacao_edit = st.text_input('Mês de fixação', value=df_atualizado.loc[indice_contrato, 'Mês de fixação'])
+    quantidade_fixada_edit = st.number_input('Quantidade Fixada (tm)', value=df_atualizado.loc[indice_contrato, 'Quantidade Fixada (tm)'], step=0.1)
+    seo_edit = st.number_input('S.E.O', value=df_atualizado.loc[indice_contrato, 'S.E.O'], step=0.01)
+    premio_desc_edit = st.number_input('Prêmio / Desc.', value=df_atualizado.loc[indice_contrato, 'Prêmio / Desc.'], step=0.01)
+    periodo_embarque_edit = st.date_input('Período de Embarque', value=df_atualizado.loc[indice_contrato, 'Período de Embarque'])
+    cessao_edit = st.text_input('Cessão (Opcional)', value=df_atualizado.loc[indice_contrato, 'Cessão'])
+
+    # Botão para aplicar as alterações
+    if st.button('Alterar Contrato'):
+        st.session_state['Contrato'].loc[indice_contrato] = [comprador_edit, contrato_edit, quantidade_vendida_edit, mes_fixacao_edit,
+                                                             quantidade_fixada_edit, seo_edit, premio_desc_edit, periodo_embarque_edit,
+                                                             cessao_edit]
+        st.session_state['Contrato'] = calcular_colunas(st.session_state['Contrato'])
 
 # Salvar DataFrame no arquivo CSV
 if 'Contrato' in st.session_state:
