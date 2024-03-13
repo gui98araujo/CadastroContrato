@@ -64,3 +64,17 @@ contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_
 if st.button('Excluir Contratos'):
     df_atualizado = df_atualizado.drop(contratos_para_excluir, axis=0)
     st.session_state['Contrato'] = df_atualizado
+
+# Selecionar contrato para edição
+contrato_para_editar = st.selectbox('Selecione contrato para editar:', df_atualizado.index.tolist())
+
+# Permitir edição das informações digitáveis do contrato selecionado
+if contrato_para_editar:
+    st.write('Edite as informações do contrato selecionado:')
+    contrato_selecionado = df_atualizado.loc[contrato_para_editar]
+    contrato_selecionado['Comprador'] = st.text_input('Comprador', value=contrato_selecionado['Comprador'])
+    contrato_selecionado['Contrato'] = st.text_input('Contrato', value=contrato_selecionado['Contrato'])
+    contrato_selecionado['Quantidade Vendida (tm)'] = st.number_input('Quantidade Vendida (tm)', value=contrato_selecionado['Quantidade Vendida (tm)'], step=0.1)
+    contrato_selecionado['Mês de fixação'] = st.text_input('Mês de fixação', value=contrato_selecionado['Mês de fixação'])
+    contrato_selecionado['Quantidade Fixada (tm)'] = st.number_input('Quantidade Fixada (tm)', value=contrato_selecionado['Quantidade Fixada (tm)'], step=0.1)
+    st.session_state['Contrato'].loc[contrato_para_editar] = contrato_selecionado
