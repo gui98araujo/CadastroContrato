@@ -78,3 +78,16 @@ if 'Contrato' in st.session_state:
 # Salvar DataFrame no arquivo CSV
 if 'Contrato' in st.session_state:
     st.session_state['Contrato'].to_csv('contratos.csv', index=False)
+
+# Botão para baixar DataFrame em Excel
+if 'Contrato' in st.session_state:
+    def download_excel():
+        df_atualizado.to_excel('contratos.xlsx', index=False)
+        st.success("DataFrame baixado com sucesso!")
+
+    st.download_button(
+        label="Baixar DataFrame em Excel",
+        data=df_atualizado.to_excel,
+        file_name='contratos.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
