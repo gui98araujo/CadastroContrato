@@ -20,10 +20,16 @@ def mostrar_dataframe(df):
 # Cabeçalho do aplicativo
 st.title('Cadastro de Contratos')
 
+# Carregar dados do arquivo CSV se existir
+try:
+    df_contrato = pd.read_csv('contratos.csv')
+except FileNotFoundError:
+    df_contrato = pd.DataFrame(columns=['Comprador', 'Contrato', 'Quantidade Vendida (tm)', 'Mês de fixação', 'Quantidade Fixada (tm)',
+                                         'S.E.O', 'Prêmio / Desc.', 'Período de Embarque', 'Cessão'])
+
 # Verificando se o DataFrame já existe na sessão
 if 'Contrato' not in st.session_state:
-    st.session_state['Contrato'] = pd.DataFrame(columns=['Comprador', 'Contrato', 'Quantidade Vendida (tm)', 'Mês de fixação', 'Quantidade Fixada (tm)',
-                                                         'S.E.O', 'Prêmio / Desc.', 'Período de Embarque', 'Cessão'])
+    st.session_state['Contrato'] = df_contrato
 
 # Criando o formulário para capturar as informações
 comprador = st.text_input('Comprador')
@@ -58,12 +64,17 @@ if 'Contrato' in st.session_state:
     mostrar_dataframe(df_atualizado)
 
 # Selecionar contrato para exclusão
-contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_atualizado['Contrato'].tolist())
+if 'Contrato' in st.session_state:
+    contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_atualizado['Contrato'].tolist())
 
-# Obter índices correspondentes aos contratos selecionados
-indices_para_excluir = df_atualizado[df_atualizado['Contrato'].isin(contratos_para_excluir)].index.tolist()
+    # Obter índices correspondentes aos contratos selecionados
+    indices_para_excluir = df_atualizado[df_atualizado['Contrato'].isin(contratos_para_excluir)].index.tolist()
 
-# Botão para excluir contratos selecionados
-if st.button('Excluir Contratos'):
-    df_atualizado = df_atualizado.drop(indices_para_excluir, axis=0)
-    st.session_state['Contrato'] = df_atualizado
+    # Botão para excluir contratos selecionados
+    if st.button('Excluir Contratos'):
+        df_atualizado = df_atualizado.drop(indices_para_excluir, axis=0)
+        st.session_state['Contrato'] = df_atualizado
+
+# Salvar DataFrame no arquivo CSV
+if 'Contrato' in st.session_state:
+    st.session_state['Contrato'].to_csv('contratos.csv', index=False)
