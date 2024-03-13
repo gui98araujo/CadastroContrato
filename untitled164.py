@@ -20,6 +20,11 @@ def mostrar_dataframe(df):
 # Cabeçalho do aplicativo
 st.title('Cadastro de Contratos')
 
+# Verificando se o DataFrame já existe na sessão
+if 'Contrato' not in st.session_state:
+    st.session_state['Contrato'] = pd.DataFrame(columns=['Comprador', 'Contrato', 'Quantidade Vendida (tm)', 'Mês de fixação', 'Quantidade Fixada (tm)',
+                                                         'S.E.O', 'Prêmio / Desc.', 'Período de Embarque', 'Cessão'])
+
 # Criando o formulário para capturar as informações
 comprador = st.text_input('Comprador')
 contrato = st.text_input('Contrato')
@@ -33,11 +38,6 @@ cessao = st.text_input('Cessão (Opcional)')
 
 # Botão para adicionar o contrato ao DataFrame
 if st.button('Adicionar Contrato'):
-    # Criando o DataFrame se ainda não existir
-    if 'Contrato' not in st.session_state:
-        st.session_state['Contrato'] = pd.DataFrame(columns=['Comprador', 'Contrato', 'Quantidade Vendida (tm)', 'Mês de fixação', 'Quantidade Fixada (tm)',
-                                                             'S.E.O', 'Prêmio / Desc.', 'Período de Embarque', 'Cessão'])
-    
     # Adicionando o contrato ao DataFrame
     st.session_state['Contrato'] = st.session_state['Contrato'].append({'Comprador': comprador,
                                                                         'Contrato': contrato,
