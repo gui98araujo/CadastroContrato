@@ -3,7 +3,9 @@ import pandas as pd
 
 # Função para calcular os campos derivados
 def calcular_campos(df):
+    print(df.head())  # Adiciona esta linha para verificar o DataFrame antes do cálculo
     df['Preço Total'] = df.apply(lambda row: row['S. E. O'] + row['Prêmio / Desc.'] if row['Quantidade Fixada'] > 0 else 0, axis=1)
+    print(df.head())  # Adiciona esta linha para verificar o DataFrame depois do cálculo
     df['Saldo a Fixar'] = df['QTD. VENDIDA'] - df['Quantidade Fixada']
     df['Lotes a fixar'] = df['Saldo a Fixar'] / 50.8
     df['SEO x Quant. Fixadas'] = df['S. E. O'] * df['Quantidade Fixada']
