@@ -20,13 +20,10 @@ def mostrar_dataframe(df):
 # Cabeçalho do aplicativo
 st.title('Cadastro de Contratos')
 
-# Carregar dados salvos ou inicializar DataFrame vazio
-@st.cache(allow_output_mutation=True)
-def carregar_dados():
-    return pd.DataFrame(columns=['Comprador', 'Contrato', 'Quantidade Vendida (tm)', 'Mês de fixação', 'Quantidade Fixada (tm)',
-                                 'S.E.O', 'Prêmio / Desc.', 'Período de Embarque', 'Cessão'])
-
-contrato_df = carregar_dados()
+# Verificando se o DataFrame já existe na sessão
+if 'Contrato' not in st.session_state:
+    st.session_state['Contrato'] = pd.DataFrame(columns=['Comprador', 'Contrato', 'Quantidade Vendida (tm)', 'Mês de fixação', 'Quantidade Fixada (tm)',
+                                                         'S.E.O', 'Prêmio / Desc.', 'Período de Embarque', 'Cessão'])
 
 # Criando o formulário para capturar as informações
 comprador = st.text_input('Comprador')
@@ -52,12 +49,13 @@ if st.button('Adicionar Contrato'):
         'Período de Embarque': [periodo_embarque],
         'Cessão': [cessao]
     })
-    contrato_df = pd.concat([contrato_df, novo_contrato], ignore_index=True)
+    st.session_state['Contrato'] = pd.concat([st.session_state['Contrato'], novo_contrato], ignore_index=True)
 
 # Exibindo o DataFrame atualizado
-st.write('DataFrame Atualizado:')
-df_atualizado = calcular_colunas(contrato_df.copy())
-mostrar_dataframe(df_atualizado)
+if 'Contrato' in st.session_state:
+    st.write('DataFrame Atualizado:')
+    df_atualizado = calcular_colunas(st.session_state['Contrato'].copy())
+    mostrar_dataframe(df_atualizado)
 
 # Selecionar contrato para exclusão
 contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_atualizado['Contrato'].tolist())
@@ -68,4 +66,4 @@ indices_para_excluir = df_atualizado[df_atualizado['Contrato'].isin(contratos_pa
 # Botão para excluir contratos selecionados
 if st.button('Excluir Contratos'):
     df_atualizado = df_atualizado.drop(indices_para_excluir, axis=0)
-    contrato_df = df_atualizado.copy()
+    st.session_state['Contrato'] = df_atualizado
