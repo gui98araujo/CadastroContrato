@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import base64
 
 # Função para calcular as colunas adicionais no DataFrame
 def calcular_colunas(df):
@@ -81,15 +82,13 @@ if 'Contrato' in st.session_state:
 
 # Botão para baixar DataFrame em Excel
 if 'Contrato' in st.session_state:
-    def download_excel():
-        df_atualizado.to_excel('contratos.xlsx', index=False)
+    def download_excel(df):
+        df.to_excel('contratos.xlsx', index=False)
         with open('contratos.xlsx', 'rb') as f:
             data = f.read()
         return data
 
-    st.download_button(
-        label="Baixar DataFrame em Excel",
-        data=download_excel,
-        file_name='contratos.xlsx',
-        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
+    excel_data = download_excel(df_atualizado)
+    b64 = base64.b64encode(excel_data).decode('utf-8')
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="contratos.xlsx">Baixar DataFrame em Excel</a>'
+    st.markdown(href, unsafe_allow_html=True)
