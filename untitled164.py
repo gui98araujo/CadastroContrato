@@ -71,11 +71,10 @@ contrato_para_editar = st.selectbox('Selecione contrato para editar:', df_atuali
 # Permitir edição das informações do contrato selecionado
 if contrato_para_editar:
     st.write('Edite as informações do contrato selecionado:')
-    contrato_selecionado = df_atualizado[df_atualizado['Contrato'] == contrato_para_editar].iloc[0]
+    contrato_index = df_atualizado[df_atualizado['Contrato'] == contrato_para_editar].index[0]
+    contrato_selecionado = df_atualizado.iloc[contrato_index]
     contrato_selecionado['Comprador'] = st.text_input('Comprador', value=contrato_selecionado['Comprador'])
-    contrato_selecionado['Contrato'] = st.text_input('Contrato', value=contrato_selecionado['Contrato'])
     contrato_selecionado['Quantidade Vendida (tm)'] = st.number_input('Quantidade Vendida (tm)', value=contrato_selecionado['Quantidade Vendida (tm)'], step=0.1)
     contrato_selecionado['Mês de fixação'] = st.text_input('Mês de fixação', value=contrato_selecionado['Mês de fixação'])
     contrato_selecionado['Quantidade Fixada (tm)'] = st.number_input('Quantidade Fixada (tm)', value=contrato_selecionado['Quantidade Fixada (tm)'], step=0.1)
-    st.session_state['Contrato'].loc[df_atualizado['Contrato'] == contrato_para_editar] = contrato_selecionado
-
+    st.session_state['Contrato'].iloc[contrato_index] = contrato_selecionado
