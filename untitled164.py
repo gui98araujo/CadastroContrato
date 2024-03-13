@@ -58,9 +58,12 @@ if 'Contrato' in st.session_state:
     mostrar_dataframe(df_atualizado)
 
 # Selecionar contrato para exclusão
-contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_atualizado.index.tolist())
+contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_atualizado['Contrato'].tolist())
+
+# Obter índices correspondentes aos contratos selecionados
+indices_para_excluir = df_atualizado[df_atualizado['Contrato'].isin(contratos_para_excluir)].index.tolist()
 
 # Botão para excluir contratos selecionados
 if st.button('Excluir Contratos'):
-    df_atualizado = df_atualizado.drop(contratos_para_excluir, axis=0)
+    df_atualizado = df_atualizado.drop(indices_para_excluir, axis=0)
     st.session_state['Contrato'] = df_atualizado
