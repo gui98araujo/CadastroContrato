@@ -58,23 +58,24 @@ if 'Contrato' in st.session_state:
     mostrar_dataframe(df_atualizado)
 
 # Selecionar contrato para exclusão
-contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_atualizado.index.tolist())
+contratos_para_excluir = st.multiselect('Selecione contratos para excluir:', df_atualizado['Contrato'].unique())
 
 # Botão para excluir contratos selecionados
 if st.button('Excluir Contratos'):
-    df_atualizado = df_atualizado.drop(contratos_para_excluir, axis=0)
+    df_atualizado = df_atualizado[~df_atualizado['Contrato'].isin(contratos_para_excluir)]
     st.session_state['Contrato'] = df_atualizado
 
 # Selecionar contrato para edição
-contrato_para_editar = st.selectbox('Selecione contrato para editar:', df_atualizado.index.tolist())
+contrato_para_editar = st.selectbox('Selecione contrato para editar:', df_atualizado['Contrato'].unique())
 
-# Permitir edição das informações digitáveis do contrato selecionado
+# Permitir edição das informações do contrato selecionado
 if contrato_para_editar:
     st.write('Edite as informações do contrato selecionado:')
-    contrato_selecionado = df_atualizado.loc[contrato_para_editar]
+    contrato_selecionado = df_atualizado[df_atualizado['Contrato'] == contrato_para_editar].iloc[0]
     contrato_selecionado['Comprador'] = st.text_input('Comprador', value=contrato_selecionado['Comprador'])
     contrato_selecionado['Contrato'] = st.text_input('Contrato', value=contrato_selecionado['Contrato'])
     contrato_selecionado['Quantidade Vendida (tm)'] = st.number_input('Quantidade Vendida (tm)', value=contrato_selecionado['Quantidade Vendida (tm)'], step=0.1)
     contrato_selecionado['Mês de fixação'] = st.text_input('Mês de fixação', value=contrato_selecionado['Mês de fixação'])
     contrato_selecionado['Quantidade Fixada (tm)'] = st.number_input('Quantidade Fixada (tm)', value=contrato_selecionado['Quantidade Fixada (tm)'], step=0.1)
-    st.session_state['Contrato'].loc[contrato_para_editar] = contrato_selecionado
+    st.session_state['Contrato'].loc[df_atualizado['Contrato'] == contrato_para_editar] = contrato_selecionado
+
