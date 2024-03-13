@@ -83,11 +83,13 @@ if 'Contrato' in st.session_state:
 if 'Contrato' in st.session_state:
     def download_excel():
         df_atualizado.to_excel('contratos.xlsx', index=False)
-        st.success("DataFrame baixado com sucesso!")
+        with open('contratos.xlsx', 'rb') as f:
+            data = f.read()
+        return data
 
     st.download_button(
         label="Baixar DataFrame em Excel",
-        data=df_atualizado.to_excel,
+        data=download_excel,
         file_name='contratos.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
