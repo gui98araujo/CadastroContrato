@@ -38,16 +38,18 @@ cessao = st.text_input('Cessão (Opcional)')
 
 # Botão para adicionar o contrato ao DataFrame
 if st.button('Adicionar Contrato'):
-    novo_contrato = {'Comprador': comprador,
-                     'Contrato': contrato,
-                     'Quantidade Vendida (tm)': quantidade_vendida,
-                     'Mês de fixação': mes_fixacao,
-                     'Quantidade Fixada (tm)': quantidade_fixada,
-                     'S.E.O': seo,
-                     'Prêmio / Desc.': premio_desc,
-                     'Período de Embarque': periodo_embarque,
-                     'Cessão': cessao}
-    st.session_state['Contrato'] = st.session_state['Contrato'].append(novo_contrato, ignore_index=True)
+    novo_contrato = pd.DataFrame({
+        'Comprador': [comprador],
+        'Contrato': [contrato],
+        'Quantidade Vendida (tm)': [quantidade_vendida],
+        'Mês de fixação': [mes_fixacao],
+        'Quantidade Fixada (tm)': [quantidade_fixada],
+        'S.E.O': [seo],
+        'Prêmio / Desc.': [premio_desc],
+        'Período de Embarque': [periodo_embarque],
+        'Cessão': [cessao]
+    })
+    st.session_state['Contrato'] = pd.concat([st.session_state['Contrato'], novo_contrato], ignore_index=True)
 
 # Exibindo o DataFrame atualizado
 if 'Contrato' in st.session_state:
